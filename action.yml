@@ -1,0 +1,19 @@
+name: 'Kustomize build input'
+description: 'Build kustomize and compare with same build from different branch'
+inputs:
+  kustomization-location:
+    description: 'Directory path of the root kustomization.yaml. Default is root of repository.'
+    required: true
+    default: './'
+
+  branch-name:
+    description: 'The name of the branch that you branched off.'
+    required: true
+    default: 'master'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.kustomization-location }}
+    - ${{ inputs.branch-name }}
