@@ -1,13 +1,13 @@
 #!/bin/bash
 
 KUSTOMIZATION_DIR_LOCATION="./"
-BRANCH_NAME_TO_COMPARE="origin/master"
+BRANCH_NAME_TO_COMPARE="master"
 KUSTOMIZE_TEMP_FOLDER=kustomize_build_temp
 
 echo "  ┌───────"
-if [ -n "$1" ]; then KUSTOMIZATION_DIR_LOCATION="$1"; else echo "  ├ WARNING No directory path specified, using current working directory";fi
-if [ -n "$2" ]; then BRANCH_NAME_TO_COMPARE="origin/$2"; else echo "  ├ WARNING No compoare branch specified, using ${BRANCH_NAME_TO_COMPARE} as default"; fi
-if [[ -f "$KUSTOMIZATION_DIR_LOCATION" ]] || [ ! -z "$(cd "${KUSTOMIZATION_DIR_LOCATION}" 2>&1)" ]; then  echo "  └ ERROR the kustomization directory path $(pwd)/$KUSTOMIZATION_DIR_LOCATION does not exist"; exit; fi
+if [ -n "$1" ]; then KUSTOMIZATION_DIR_LOCATION="$1"; else echo "  ├ WARNING No kustomization directory path specified, using current working directory";fi
+if [ -n "$2" ]; then BRANCH_NAME_TO_COMPARE="$2"; else echo "  ├ WARNING No compoare branch specified, using local ${BRANCH_NAME_TO_COMPARE} as default"; fi
+if [[ -f "$KUSTOMIZATION_DIR_LOCATION" ]] || [ ! -z "$(cd "${KUSTOMIZATION_DIR_LOCATION}" 2>&1)" ]; then  echo "  └ ERROR the kustomization directory path $(pwd)/$KUSTOMIZATION_DIR_LOCATION does not exist"; exit 1; fi
 
 cd "${KUSTOMIZATION_DIR_LOCATION}"
 
@@ -26,7 +26,7 @@ if [ ! -z "$kustomize_build_new" ]; then
   echo "  ├ ERROR kustomize build failed for current changes"
   while IFS= read -r line ; do echo "  ├ $line"; done <<< "$kustomize_build_new"
   if [ -d "${KUSTOMIZE_TEMP_FOLDER}" ]; then rm -Rf "${KUSTOMIZE_TEMP_FOLDER}"; fi
-  exit
+  exit 1
 fi
 
 cd "${KUSTOMIZE_TEMP_FOLDER}"
@@ -34,7 +34,7 @@ cd "${KUSTOMIZE_TEMP_FOLDER}"
 detached_folder="${BRANCH_NAME_TO_COMPARE}-detached"
 if [ -d "$detached_folder" ]; then rm -Rf $detached_folder; fi
 git worktree prune
-detaching_git_worktree=$(git worktree add ${detached_folder} --checkout --detach "${BRANCH_NAME_TO_COMPARE}") || exit
+detaching_git_worktree=$(git worktree add ${detached_folder} --checkout --detach "${BRANCH_NAME_TO_COMPARE}") || exit 1
 while IFS= read -r line ; do echo "  ├ $line"; done <<< "$detaching_git_worktree"
 cd "${detached_folder}"
 
@@ -43,10 +43,10 @@ if [[ -f "$KUSTOMIZATION_DIR_RELATIVE_PATH" ]] || [ ! -z "$(cd "${KUSTOMIZATION_
 then
   echo "  └ ERROR branch $BRANCH_NAME_TO_COMPARE does not have $KUSTOMIZATION_DIR_RELATIVE_PATH, cannot compare branches"
   if [ -d "${KUSTOMIZE_TEMP_FOLDER}" ]; then rm -Rf "${KUSTOMIZE_TEMP_FOLDER}"; fi
-  exit
+  exit 1
 fi
 cd "${KUSTOMIZATION_DIR_RELATIVE_PATH}"
-checkout_branched_off_hash=$(git checkout "${BRANCHED_OFF_HASH}" 2>&1) || exit
+checkout_branched_off_hash=$(git checkout "${BRANCHED_OFF_HASH}" 2>&1) || exit 1
 while IFS= read -r line ; do echo "  ├─ $line"; done <<< "$checkout_branched_off_hash"
 
 
@@ -56,7 +56,7 @@ if [ ! -z "$kustomize_build_old" ]; then
   while IFS= read -r line ; do echo "  ├ $line"; done <<< "$kustomize_build_old"
   cd "${GIT_TOP_LEVEL_FOLDER}/${KUSTOMIZATION_DIR_RELATIVE_PATH}"
   if [ -d "${KUSTOMIZE_TEMP_FOLDER}" ]; then rm -Rf "${KUSTOMIZE_TEMP_FOLDER}"; fi
-  exit
+  exit 1
 fi
 
 cd "${GIT_TOP_LEVEL_FOLDER}/${KUSTOMIZATION_DIR_RELATIVE_PATH}/${KUSTOMIZE_TEMP_FOLDER}"
