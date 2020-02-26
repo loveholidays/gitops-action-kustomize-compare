@@ -63,7 +63,7 @@ cd "${GIT_TOP_LEVEL_FOLDER}/${KUSTOMIZATION_DIR_RELATIVE_PATH}/${KUSTOMIZE_TEMP_
 git worktree prune
 if [ -d "$detached_folder" ]; then rm -Rf $detached_folder; fi
 
-echo "  ├ Splitting kustomize build into separete objects"
+echo "  ├ Splitting kustomization build into separate objects"
 
 cat kustomize-new.yaml | csplit - -f 'new.' -b '%03d.yaml' -k /^---$/ '{*}' > /dev/null
 cat kustomize-old.yaml | csplit - -f 'old.' -b '%03d.yaml' -k /^---$/ '{*}' > /dev/null
