@@ -6,7 +6,7 @@ KUSTOMIZE_TEMP_FOLDER=kustomize_build_temp
 
 echo "  ┌───────"
 if [ -n "$1" ]; then KUSTOMIZATION_DIR_LOCATION="$1"; else echo "  ├ WARNING No kustomization directory path specified, using current working directory";fi
-if [ -n "$2" ]; then BRANCH_NAME_TO_COMPARE="$2"; else echo "  ├ WARNING No compoare branch specified, using local ${BRANCH_NAME_TO_COMPARE} as default"; fi
+if [ -n "$2" ]; then BRANCH_NAME_TO_COMPARE="$2"; else echo "  ├ WARNING No compare branch specified, using local ${BRANCH_NAME_TO_COMPARE} as default"; fi
 if [[ -f "$KUSTOMIZATION_DIR_LOCATION" ]] || [ ! -z "$(cd "${KUSTOMIZATION_DIR_LOCATION}" 2>&1)" ]; then  echo "  └ ERROR the kustomization directory path $(pwd)/$KUSTOMIZATION_DIR_LOCATION does not exist"; exit 1; fi
 
 cd "${KUSTOMIZATION_DIR_LOCATION}"
@@ -38,7 +38,7 @@ detaching_git_worktree=$(git worktree add ${detached_folder} --checkout --detach
 while IFS= read -r line ; do echo "  ├ $line"; done <<< "$detaching_git_worktree"
 cd "${detached_folder}"
 
-# check if same directory exist in other branch
+# check if same directory exists in other branch
 if [[ -f "$KUSTOMIZATION_DIR_RELATIVE_PATH" ]] || [ ! -z "$(cd "${KUSTOMIZATION_DIR_RELATIVE_PATH}" 2>&1)" ]
 then
   echo "  └ ERROR branch $BRANCH_NAME_TO_COMPARE does not have $KUSTOMIZATION_DIR_RELATIVE_PATH, cannot compare branches"
