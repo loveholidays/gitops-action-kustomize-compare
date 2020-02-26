@@ -6,8 +6,8 @@ inputs:
     required: true
     default: './'
 
-  branch-name:
-    description: 'The name of the branch that you branched off.'
+  compare-branch-name:
+    description: 'The name of the branch that want to compare. Usually is the name of the branch you branched of'
     required: true
     default: 'master'
 
@@ -16,4 +16,4 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.kustomization-location }}
-    - ${{ inputs.branch-name }}
+    - ${{ inputs.compare-branch-name }}
