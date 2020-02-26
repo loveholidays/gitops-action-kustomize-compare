@@ -119,7 +119,7 @@ do
 done
 if [ "$changes_detected" = false ] ; then
   echo "  ╭─"
-  echo "  │ No changed detected for ${KUSTOMIZATION_DIR_RELATIVE_PATH}/kustomization.yaml"
+  echo "  │ No changes detected for ${KUSTOMIZATION_DIR_RELATIVE_PATH}/kustomization.yaml"
   echo "  ╰─"
 
 fi
